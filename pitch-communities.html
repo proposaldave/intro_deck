@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real World Social Communities — Give 'n Take</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=Playfair+Display:wght@700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0f0d;
+    --green: #2d5a3d;
+    --green-light: #4a8c5e;
+    --green-glow: #3dff7a;
+    --cream: #e8e0d0;
+    --white: #f5f2ec;
+    --gold: #d4a853;
+    --red: #e04040;
+    --red-glow: #ff4444;
+    --blue: #3a7bd5;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ===== SLIDE 1: Real World Social Communities ===== */
+  .s1-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 56px);
+    font-weight: 900;
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 10px;
+    line-height: 1.15;
+  }
+  .s1-subtitle {
+    font-size: clamp(13px, 1.6vw, 20px);
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+    font-weight: 500;
+  }
+
+  .community-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1000px;
+    margin-bottom: 50px;
+  }
+
+  .community-card {
+    width: 150px;
+    height: 218px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 12px;
+  }
+  .community-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.04) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .community-card:hover::before { opacity: 1; }
+  .community-card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-4px);
+  }
+
+  .community-card.highlight {
+    border-color: var(--green-light);
+    background: rgba(45, 90, 61, 0.15);
+    box-shadow: 0 0 30px rgba(61, 255, 122, 0.08);
+  }
+  .community-card.highlight:hover {
+    border-color: var(--green-glow);
+    box-shadow: 0 0 40px rgba(61, 255, 122, 0.15);
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  .card-icon { font-size: 42px; }
+  .card-label {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  /* Pain bar system */
+  .card-metrics {
+    width: 100%;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .paradigm-tag {
+    width: calc(100% - 16px);
+    margin: 2px 8px 0;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .paradigm-tag.wrong {
+    background: rgba(224, 64, 64, 0.15);
+    border: 1px solid rgba(224, 64, 64, 0.5);
+    color: var(--red);
+    font-size: 9px;
+    padding: 5px 6px;
+  }
+  .paradigm-tag.none {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.25);
+  }
+  .pain-bar-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pain-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pain-bar-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+  }
+  .pain-bar-pct {
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .pain-bar-track {
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+  }
+  .pain-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pain-bar-fill.red {
+    background: linear-gradient(90deg, var(--red), #ff6b6b);
+  }
+  .pain-bar-fill.green {
+    background: linear-gradient(90deg, var(--green-light), var(--green-glow));
+  }
+  /* Color the pct label to match */
+  .pain-bar-pct.red { color: var(--red); }
+  .pain-bar-pct.green { color: var(--green-glow); }
+
+  .s1-bottom {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(15px, 2vw, 24px);
+    color: rgba(232, 224, 208, 0.5);
+    text-align: center;
+    max-width: 700px;
+    line-height: 1.5;
+  }
+  .s1-bottom em {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .byhand-tag {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 1px solid var(--red);
+    border-radius: 100px;
+    color: var(--red);
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(11px, 1.3vw, 15px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: pulse-red 2.5s infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(224, 64, 64, 0.3); }
+    50% { box-shadow: 0 0 20px 4px rgba(224, 64, 64, 0.15); }
+  }
+
+  .click-hint {
+    position: absolute;
+    bottom: 30px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  /* ===== SLIDE 2: Social Sports Deep Dive ===== */
+  .s2-header {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 3vw, 42px);
+    font-weight: 900;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .s2-sub {
+    font-size: clamp(12px, 1.4vw, 18px);
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .pain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 40px;
+    max-width: 700px;
+  }
+  .pain-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: rgba(224, 64, 64, 0.06);
+    border: 1px solid rgba(224, 64, 64, 0.15);
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  .pain-item.show {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.5s ease;
+  }
+  .pain-x {
+    color: var(--red);
+    font-weight: 700;
+    font-size: 20px;
+    min-width: 24px;
+  }
+  .pain-text {
+    font-size: clamp(13px, 1.5vw, 17px);
+    color: var(--cream);
+    line-height: 1.4;
+  }
+
+  .sport-cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .sport-card {
+    width: 130px;
+    height: 130px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+  .sport-card.pb {
+    border-color: var(--green-light);
+    background: rgba(45, 90, 61, 0.2);
+    box-shadow: 0 0 30px rgba(61, 255, 122, 0.1);
+  }
+  .sport-card.pb:hover {
+    border-color: var(--green-glow);
+    box-shadow: 0 0 50px rgba(61, 255, 122, 0.2);
+    transform: scale(1.05);
+  }
+  .sport-icon { font-size: 38px; }
+  .sport-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  /* ===== SLIDE 5: Community Graph (Network Visualization) ===== */
+  .graph-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 90%;
+    max-width: 900px;
+  }
+  .graph-top-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 1.6vw, 20px);
+    font-weight: 700;
+    color: rgba(232, 224, 208, 0.5);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .graph-container {
+    position: relative;
+    width: min(480px, 80vw);
+    height: min(480px, 80vw);
+  }
+  .graph-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .graph-svg line {
+    stroke-dasharray: 6 4;
+    stroke-width: 1.5;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .graph-svg line.show {
+    opacity: 0.35;
+  }
+
+  .graph-center-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45, 90, 61, 0.4) 0%, rgba(10, 15, 13, 0.9) 100%);
+    border: 1.5px solid rgba(74, 140, 94, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    box-shadow: 0 0 50px rgba(61, 255, 122, 0.1);
+  }
+  .graph-center-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .graph-node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 3;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .graph-node.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .node-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 0 16px rgba(255,255,255,0.15);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .graph-node:hover .node-dot {
+    transform: scale(1.15);
+    box-shadow: 0 0 24px rgba(255,255,255,0.3);
+  }
+  .node-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  /* Navigation */
+  .nav-dots {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active {
+    background: var(--green-light);
+    border-color: var(--green-glow);
+    box-shadow: 0 0 10px rgba(61, 255, 122, 0.3);
+  }
+
+  .nav-arrows {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+  }
+  .nav-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: var(--cream);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  .nav-arrow:hover {
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.08);
+  }
+  .nav-prev { position: fixed; left: 20px; }
+  .nav-next { position: fixed; right: 20px; }
+
+  /* Back button */
+  .back-btn {
+    position: absolute;
+    top: 24px;
+    left: 80px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    z-index: 10;
+  }
+  .back-btn:hover { color: rgba(255,255,255,0.6); }
+
+  /* ===== SLIDE 3: Combined — Alfred Lin + 100 Years Wrong ===== */
+  .s3-combined {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    max-width: 950px;
+    width: 92%;
+    padding-top: 10px;
+  }
+  .s3-top-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    width: 100%;
+  }
+  .s3-left {
+    flex: 1;
+  }
+  .s3-hero {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 50px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+  .s3-hero .fastest {
+    color: var(--green-glow);
+    display: block;
+    font-size: clamp(11px, 1.2vw, 16px);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .s3-stat-line {
+    font-size: clamp(12px, 1.2vw, 15px);
+    color: rgba(232, 224, 208, 0.4);
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  /* video placeholder styles removed */
+
+  .s3-incorrect-row {
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+  }
+  .incorrect-quote-inline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.4vw, 32px);
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1.3;
+  }
+  .iq-dash {
+    color: rgba(232, 224, 208, 0.2);
+    margin: 0 8px;
+    font-weight: 300;
+  }
+  .iq-what {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(13px, 1.4vw, 18px);
+    font-weight: 500;
+    color: rgba(232, 224, 208, 0.5);
+    letter-spacing: 1px;
+  }
+
+  /* ===== SLIDE 4 (was 5): 100 Years Wrong — reused styles ===== */
+  .s4-wrong-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 900px;
+    width: 90%;
+  }
+  .s4-wrong-era {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .century-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(72px, 12vw, 140px);
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(224, 64, 64, 0.25);
+  }
+  .century-word {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: 300;
+    color: rgba(232, 224, 208, 0.4);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .s4-wrong-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.4vw, 32px);
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .wrong-highlight {
+    color: var(--red);
+  }
+
+  .timeline-strip {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    max-width: 750px;
+    margin: 10px 0;
+  }
+  .timeline-era {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.5s ease;
+  }
+  .timeline-era.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .tl-year {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(224, 64, 64, 0.7);
+    letter-spacing: 1px;
+  }
+  .tl-bar {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(224,64,64,0.15), rgba(224,64,64,0.5));
+    border-radius: 2px;
+    position: relative;
+  }
+  .tl-bar::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 10px rgba(224, 64, 64, 0.4);
+  }
+  .tl-label {
+    font-size: 11px;
+    color: rgba(232, 224, 208, 0.45);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .wrong-assumption-box {
+    position: relative;
+    padding: 24px 36px;
+    border: 2px solid rgba(224, 64, 64, 0.3);
+    border-radius: 16px;
+    background: rgba(224, 64, 64, 0.04);
+    max-width: 600px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.6s ease;
+    margin-bottom: 14px;
+  }
+  .wrong-assumption-box.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .wrong-quote-mark {
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: rgba(224, 64, 64, 0.25);
+    line-height: 1;
+  }
+  .wrong-assumption-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 2vw, 24px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.4;
+  }
+  .wrong-stamp {
+    position: absolute;
+    bottom: -18px;
+    right: 20px;
+    transform: rotate(-6deg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 3px;
+    border: 3px solid var(--red);
+    padding: 3px 14px;
+    border-radius: 4px;
+    background: var(--bg);
+    box-shadow: 0 0 20px rgba(224, 64, 64, 0.3);
+    opacity: 0;
+    transition: opacity 0.4s ease 0.8s;
+  }
+  .wrong-assumption-box.show .wrong-stamp {
+    opacity: 1;
+  }
+
+  .wrong-bottom {
+    font-size: clamp(13px, 1.4vw, 17px);
+    color: rgba(232, 224, 208, 0.4);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* ===== SLIDE 5: Cascade List ===== */
+  .s5-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 800px;
+    width: 90%;
+  }
+  .s5-header {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 42px);
+    font-weight: 900;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .cascade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 650px;
+  }
+  .cascade-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+  .cascade-item.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .cascade-num {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green-glow);
+    min-width: 28px;
+    opacity: 0.5;
+  }
+  .cascade-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 2.2vw, 26px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+  .cascade-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(61,255,122,0.15));
+    margin-left: auto;
+  }
+
+  .cascade-cta {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s ease;
+    padding: 16px 32px;
+    border: 1px solid rgba(74, 140, 94, 0.3);
+    border-radius: 12px;
+    background: rgba(45, 90, 61, 0.1);
+    cursor: pointer;
+  }
+  .cascade-cta.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .cascade-cta:hover {
+    border-color: var(--green-glow);
+    background: rgba(45, 90, 61, 0.2);
+    box-shadow: 0 0 30px rgba(61, 255, 122, 0.1);
+  }
+
+  /* ===== SLIDE 4: Teaser — What Replaces It? ===== */
+  .teaser-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    max-width: 800px;
+    width: 90%;
+  }
+  .teaser-question {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.6vw, 36px);
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .teaser-divider {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-light), transparent);
+    opacity: 0.5;
+  }
+  .teaser-answer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .teaser-line {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .teaser-line.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .teaser-line.t1 {
+    font-size: clamp(22px, 3vw, 42px);
+    color: var(--cream);
+  }
+  .teaser-line.t2 {
+    font-size: clamp(24px, 3.4vw, 48px);
+    color: var(--cream);
+  }
+  .teaser-line.t3 {
+    font-size: clamp(26px, 3.8vw, 54px);
+    color: var(--cream);
+  }
+  .teaser-line.t4 {
+    font-size: clamp(18px, 2.2vw, 30px);
+    color: rgba(232, 224, 208, 0.5);
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .teaser-line.t5 {
+    font-size: clamp(16px, 1.8vw, 24px);
+    color: rgba(232, 224, 208, 0.35);
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .teaser-line.t6 {
+    font-size: clamp(32px, 5vw, 72px);
+    margin-top: 8px;
+  }
+
+  .teaser-cta {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s ease;
+    padding: 12px 28px;
+    border: 1px solid rgba(212, 168, 83, 0.25);
+    border-radius: 10px;
+    background: rgba(212, 168, 83, 0.04);
+    cursor: pointer;
+  }
+  .teaser-cta.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .teaser-cta:hover {
+    border-color: var(--gold);
+    background: rgba(212, 168, 83, 0.1);
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
+  }
+
+  /* Social media contrast */
+  .sm-contrast {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sm-contrast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .sm-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 1.6vw, 20px);
+    font-weight: 700;
+    color: rgba(232, 224, 208, 0.45);
+    text-align: center;
+    line-height: 1.3;
+    max-width: 500px;
+  }
+  .sm-shift {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .sm-from, .sm-to {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .sm-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .sm-old {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .sm-new {
+    background: rgba(45, 90, 61, 0.2);
+    border: 1px solid rgba(74, 140, 94, 0.4);
+    box-shadow: 0 0 20px rgba(61, 255, 122, 0.1);
+  }
+  .sm-label {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(12px, 1.3vw, 16px);
+    font-weight: 700;
+    text-align: center;
+  }
+  .sm-arrow {
+    color: rgba(255,255,255,0.15);
+    font-size: 20px;
+  }
+
+  /* Social media standalone slide */
+  .sm-slide-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    max-width: 800px;
+    width: 90%;
+  }
+  .sm-headline-big {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 42px);
+    font-weight: 900;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.25;
+  }
+
+  /* Variant toggle */
+  .variant-toggle {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    display: flex;
+    gap: 2px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 3px;
+    z-index: 10;
+  }
+  .vtab {
+    padding: 5px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .vtab.active {
+    background: rgba(74, 140, 94, 0.3);
+    color: var(--green-glow);
+  }
+
+  .variant {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .variant.active {
+    display: flex;
+  }
+
+  /* Cascade icon (replacing num) */
+  .cascade-icon {
+    font-size: 22px;
+    min-width: 34px;
+    text-align: center;
+  }
+
+  /* Variant B: Pillar grid */
+  .vb-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 850px;
+    width: 90%;
+  }
+  .vb-header {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.8vw, 40px);
+    font-weight: 900;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.25;
+  }
+  .vb-reinvented {
+    color: var(--green-glow);
+    display: inline-block;
+    position: relative;
+  }
+  .vb-reinvented::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-glow), transparent);
+    opacity: 0.4;
+  }
+
+  .pillar-grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 700px;
+  }
+  .pillar-card {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .pillar-card.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .pillar-icon-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pillar-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(61, 255, 122, 0.1) 0%, transparent 70%);
+    border: 1px solid rgba(74, 140, 94, 0.25);
+  }
+  .pillar-icon {
+    font-size: 32px;
+    z-index: 1;
+  }
+  .pillar-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .pillar-card:hover .pillar-glow {
+    background: radial-gradient(circle, rgba(61, 255, 122, 0.18) 0%, transparent 70%);
+    border-color: rgba(74, 140, 94, 0.5);
+    box-shadow: 0 0 20px rgba(61, 255, 122, 0.1);
+  }
+
+  .vb-bottom {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 1.6vw, 20px);
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .community-grid { gap: 12px; }
+    .community-card { width: 110px; height: 185px; }
+    .card-icon { font-size: 30px; }
+    .s3-top-row { flex-direction: column; }
+    .video-placeholder { width: 100%; min-width: unset; }
+    .sport-cards { gap: 12px; }
+    .sport-card { width: 100px; height: 100px; }
+    .graph-container { width: 340px; height: 340px; }
+    .graph-center-node { width: 80px; height: 80px; }
+    .graph-center-label { font-size: 12px; }
+    .node-dot { width: 28px; height: 28px; }
+    .node-label { font-size: 8px; }
+    .timeline-strip { gap: 4px; }
+    .tl-label { font-size: 9px; }
+    .wrong-stamp { font-size: 12px; right: 10px; bottom: -14px; letter-spacing: 2px; }
+    .cascade-text { font-size: 16px; }
+    .pillar-grid { gap: 10px; }
+    .pillar-card { width: 100px; }
+    .pillar-icon-wrap { width: 56px; height: 56px; }
+    .pillar-icon { font-size: 26px; }
+    .pillar-label { font-size: 11px; }
+  }
+
+  /* Archive panel */
+  .archive-toggle {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    cursor: pointer;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.3s;
+    z-index: 200;
+  }
+  .archive-toggle:hover {
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .archive-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: #111614;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    z-index: 300;
+    overflow-y: auto;
+    transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .archive-panel.open {
+    right: 0;
+    box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+  }
+  .archive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .archive-close {
+    cursor: pointer;
+    color: rgba(255,255,255,0.3);
+    font-size: 18px;
+    transition: color 0.2s;
+  }
+  .archive-close:hover { color: rgba(255,255,255,0.6); }
+
+  .archive-slide-card {
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.02);
+    overflow: hidden;
+  }
+  .archive-label {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+  }
+  .archive-preview {
+    padding: 16px;
+  }
+  .archive-reason {
+    padding: 10px 16px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .archive-panel { width: 85vw; right: -85vw; }
+  }
+
+  /* ===== NODE CLICKABILITY HINTS ===== */
+  .node-pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-radius: 50%;
+    border: 2px solid #f0c040;
+    opacity: 0;
+    animation: node-beacon 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes node-beacon {
+    0% { transform: scale(0.8); opacity: 0; }
+    40% { opacity: 0.6; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  .node-tap-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: #f0c040;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    animation: bob 2s ease-in-out infinite;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .graph-explore-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(11px, 1.2vw, 14px);
+    color: rgba(232, 224, 208, 0.35);
+    letter-spacing: 1px;
+    margin-top: 8px;
+    animation: bob 2.5s ease-in-out infinite;
+  }
+  /* After first click, hide hints */
+  .hints-hidden .node-pulse-ring,
+  .hints-hidden .node-tap-hint,
+  .hints-hidden .graph-explore-hint {
+    display: none;
+  }
+
+  /* ===== NODE DETAIL OVERLAY ===== */
+  .node-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 12, 10, 0.96);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    cursor: pointer;
+  }
+  .node-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .overlay-close {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    font-size: 22px;
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s;
+  }
+  .overlay-close:hover { color: rgba(255,255,255,0.7); }
+  .overlay-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 40px);
+    font-weight: 900;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .overlay-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(12px, 1.4vw, 17px);
+    color: rgba(232, 224, 208, 0.45);
+    text-align: center;
+    max-width: 500px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .overlay-svg {
+    width: min(580px, 85vw);
+    height: min(380px, 55vh);
+  }
+  .overlay-hint {
+    position: absolute;
+    bottom: 28px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+  }
+  .graph-node { cursor: pointer; }
+  .graph-node:hover .node-dot {
+    transform: scale(1.25);
+    box-shadow: 0 0 28px rgba(255,255,255,0.4);
+  }
+  .graph-node:hover .node-label {
+    color: #fff;
+  }
+
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -20; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes rise-up {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 4: Social Media Was Narrow ===== -->
+<div class="slide active" id="slide1">
+  <div style="position:absolute;top:24px;left:80px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25)">Invitation-Based Matchmaking</div>
+
+  <div class="sm-slide-container">
+    <div class="sm-headline-big">
+      Social media is a very narrow view<br>
+      of human connection technology.
+    </div>
+
+    <div class="sm-shift">
+      <div class="sm-from">
+        <div class="sm-circle sm-old" style="padding:0;overflow:visible">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <!-- Lonely person -->
+            <circle cx="26" cy="14" r="5" fill="rgba(232,224,208,0.35)"/>
+            <path d="M26 20 L26 34" stroke="rgba(232,224,208,0.3)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 26 L26 23 L32 26" stroke="rgba(232,224,208,0.25)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M22 34 L26 34 L30 34" stroke="rgba(232,224,208,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Phone in hand -->
+            <rect x="30" y="22" width="7" height="12" rx="1.5" fill="none" stroke="rgba(232,224,208,0.4)" stroke-width="1"/>
+            <rect x="31.5" y="24" width="4" height="7" rx="0.5" fill="rgba(100,140,255,0.3)"/>
+            <!-- Dim glow from phone -->
+            <circle cx="33.5" cy="27" r="8" fill="rgba(100,140,255,0.06)"/>
+          </svg>
+        </div>
+        <div class="sm-label" style="color:rgba(232,224,208,0.4)">Scroll alone</div>
+      </div>
+      <div class="sm-arrow">→</div>
+      <div class="sm-to">
+        <div class="sm-circle sm-new" style="padding:0;overflow:visible">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <!-- Center person -->
+            <circle cx="26" cy="16" r="5.5" fill="#d4a853" opacity="0.9"/>
+            <path d="M26 22.5 L26 34 M20 27 L32 27" stroke="#d4a853" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+            <!-- Left person -->
+            <circle cx="11" cy="22" r="4" fill="#4a8c5e" opacity="0.75">
+              <animate attributeName="cx" values="6;11" dur="1.2s" fill="freeze"/>
+            </circle>
+            <path d="M11 27 L11 36" stroke="#4a8c5e" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+              <animate attributeName="d" values="M6 27 L6 36;M11 27 L11 36" dur="1.2s" fill="freeze"/>
+            </path>
+            <!-- Right person -->
+            <circle cx="41" cy="22" r="4" fill="#4a8c5e" opacity="0.75">
+              <animate attributeName="cx" values="46;41" dur="1.2s" fill="freeze"/>
+            </circle>
+            <path d="M41 27 L41 36" stroke="#4a8c5e" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+              <animate attributeName="d" values="M46 27 L46 36;M41 27 L41 36" dur="1.2s" fill="freeze"/>
+            </path>
+            <!-- Connection arcs -->
+            <path d="M16 24 Q26 18 36 24" stroke="#3dff7a" stroke-width="1" stroke-dasharray="3 2" opacity="0" fill="none">
+              <animate attributeName="opacity" values="0;0.5" dur="0.6s" begin="1s" fill="freeze"/>
+            </path>
+            <path d="M14 30 Q26 24 38 30" stroke="#d4a853" stroke-width="0.8" stroke-dasharray="2 2" opacity="0" fill="none">
+              <animate attributeName="opacity" values="0;0.35" dur="0.6s" begin="1.3s" fill="freeze"/>
+            </path>
+          </svg>
+        </div>
+        <div class="sm-label" style="color:var(--gold)">Feel good together</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 1: Real World Social Communities ===== -->
+<div class="slide" id="slide2">
+  <div class="back-btn" onclick="goTo(1)">← The Shift</div>
+  <div class="s1-title">Human connection is still coordinated by hand<br>in our real-world social communities.</div>
+
+  <div class="community-grid">
+    <div class="community-card highlight" onclick="goTo(3)" data-pain="95" data-signals="92">
+      <div class="card-icon"><svg width="42" height="42" viewBox="0 0 42 42" fill="none"><rect x="14" y="2" width="16" height="22" rx="8" fill="#4a8c5e" stroke="#3dff7a" stroke-width="1"/><rect x="18" y="24" width="8" height="10" rx="2" fill="#6b4c2a" stroke="#8b6c3a" stroke-width="0.8"/><circle cx="19" cy="10" r="1.2" fill="rgba(0,0,0,0.25)"/><circle cx="25" cy="10" r="1.2" fill="rgba(0,0,0,0.25)"/><circle cx="22" cy="14" r="1.2" fill="rgba(0,0,0,0.25)"/><circle cx="19" cy="18" r="1.2" fill="rgba(0,0,0,0.25)"/><circle cx="25" cy="18" r="1.2" fill="rgba(0,0,0,0.25)"/><circle cx="35" cy="8" r="4" fill="#c8d84a" stroke="#a0b030" stroke-width="0.8"/><circle cx="33.5" cy="7" r="0.6" fill="rgba(0,0,0,0.2)"/><circle cx="36" cy="9" r="0.6" fill="rgba(0,0,0,0.2)"/><circle cx="34.5" cy="9.5" r="0.6" fill="rgba(0,0,0,0.2)"/></svg></div>
+      <div class="card-label">Social<br>Sports</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">95%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="95"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">92%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="92"></div></div>
+        </div>
+      </div>
+      <div class="paradigm-tag wrong"><span style="font-size:16px;line-height:1">✕</span> Incorrect Paradigm</div>
+      <div style="margin-top:4px;font-size:7px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-glow);opacity:0.8;text-align:center">★ Perfect Outlier Wedge</div>
+    </div>
+    <div class="community-card" data-pain="55" data-signals="45">
+      <div class="card-icon">🏘️</div>
+      <div class="card-label">Neighborhoods</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">55%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="55"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">45%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="45"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" data-pain="50" data-signals="35">
+      <div class="card-icon">🏛️</div>
+      <div class="card-label">Towns &<br>Cities</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">50%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="50"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">35%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="35"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" data-pain="65" data-signals="50">
+      <div class="card-icon">📚</div>
+      <div class="card-label">Homeschool<br>Groups</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">65%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="65"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">50%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="50"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" data-pain="45" data-signals="55">
+      <div class="card-icon">⛪</div>
+      <div class="card-label">Faith<br>Communities</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">45%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="45"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">55%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="55"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" data-pain="60" data-signals="48">
+      <div class="card-icon">🧘</div>
+      <div class="card-label">Fitness &<br>Gym Groups</div>
+      <div class="card-metrics">
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Coord. Pain</span>
+            <span class="pain-bar-pct red">60%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill red" data-width="60"></div></div>
+        </div>
+        <div class="pain-bar-wrap">
+          <div class="pain-bar-header">
+            <span class="pain-bar-label">Signal Density</span>
+            <span class="pain-bar-pct green">48%</span>
+          </div>
+          <div class="pain-bar-track"><div class="pain-bar-fill green" data-width="48"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== SLIDE 2: The World Is Incorrect — Combined ===== -->
+<div class="slide" id="slide3">
+  <div class="back-btn" onclick="goTo(2)">← Wedge</div>
+
+  <div class="s3-combined">
+    <!-- Top: Pickleball hero -->
+    <div class="s3-top-row">
+      <div class="s3-left">
+        <div class="s3-hero">
+          <span class="fastest">Fastest-growing sport in U.S. history</span>
+          Pickleball
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-strip" id="timelineStrip">
+      <div class="timeline-era" data-delay="0">
+        <div class="tl-year">1920s</div>
+        <div class="tl-bar"></div>
+        <div class="tl-label">Tennis adopts<br>skill ratings</div>
+      </div>
+      <div class="timeline-era" data-delay="1">
+        <div class="tl-year">1970s</div>
+        <div class="tl-bar"></div>
+        <div class="tl-label">NTRP becomes<br>the standard</div>
+      </div>
+      <div class="timeline-era" data-delay="2">
+        <div class="tl-year">2010s</div>
+        <div class="tl-bar"></div>
+        <div class="tl-label">Pickleball borrows<br>the same system</div>
+      </div>
+      <div class="timeline-era" data-delay="3">
+        <div class="tl-year">2020s</div>
+        <div class="tl-bar"></div>
+        <div class="tl-label">DUPR arrives —<br>still just a number</div>
+      </div>
+    </div>
+
+    <!-- WRONG box -->
+    <div class="wrong-assumption-box" id="wrongBox">
+      <div class="wrong-quote-mark">"</div>
+      <div class="wrong-assumption-text">
+        Matching players based on <span style="color:var(--red);font-weight:700">competitive skill ratings data.</span>
+      </div>
+      <div class="wrong-stamp">INCORRECT PARADIGM</div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="wrong-bottom">
+      <span style="color:var(--cream)">Pickleball is a wildly social sport. 85% of play is social.</span> <span style="color:rgba(232,224,208,0.35)">The system treats them like competitors.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: What Replaces It? (Teaser) ===== -->
+<div class="slide" id="slide4">
+  <div class="back-btn" onclick="goTo(3)">← The Uncomfortable Cultural Shift</div>
+
+  <div class="teaser-container">
+    <div class="teaser-question">
+      What replaces skill ratings'<br>
+      <span style="color:var(--red)">100-year reign?</span>
+    </div>
+
+    <!-- Visual: old paradigm crumbling → new paradigm emerging -->
+    <div style="display:flex;align-items:center;gap:32px;margin:10px 0 20px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.85">
+        <div style="font-size:48px;filter:grayscale(1) opacity(0.6)">📊</div>
+        <div style="font-size:14px;color:var(--red);font-weight:700;letter-spacing:1px;text-transform:uppercase">Skill Rating</div>
+        <div style="font-size:12px;color:rgba(232,224,208,0.6)">One number.<br>One dimension.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div style="font-size:24px;color:rgba(232,224,208,0.15)">→</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,rgba(45,90,61,0.4) 0%,transparent 70%);border:1.5px solid rgba(74,140,94,0.5);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(61,255,122,0.12)">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="10" r="3" fill="#4a8c5e" opacity="0.8"/>
+            <circle cx="8" cy="20" r="2.5" fill="#d4a853" opacity="0.7"/>
+            <circle cx="24" cy="20" r="2.5" fill="#e88a4a" opacity="0.7"/>
+            <circle cx="12" cy="26" r="2" fill="#c76bdb" opacity="0.6"/>
+            <circle cx="20" cy="26" r="2" fill="#4ae8c1" opacity="0.6"/>
+            <line x1="16" y1="10" x2="8" y2="20" stroke="#3dff7a" stroke-width="0.8" opacity="0.4"/>
+            <line x1="16" y1="10" x2="24" y2="20" stroke="#3dff7a" stroke-width="0.8" opacity="0.4"/>
+            <line x1="8" y1="20" x2="12" y2="26" stroke="#3dff7a" stroke-width="0.6" opacity="0.3"/>
+            <line x1="24" y1="20" x2="20" y2="26" stroke="#3dff7a" stroke-width="0.6" opacity="0.3"/>
+            <line x1="8" y1="20" x2="24" y2="20" stroke="#3dff7a" stroke-width="0.6" opacity="0.25" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+        <div style="font-size:12px;color:rgba(232,224,208,0.7);text-align:center">Our private thoughts and feelings<br>about each other.</div>
+        <div style="font-size:14px;color:var(--green-glow);font-weight:700;letter-spacing:1px;text-transform:uppercase">Human Connection, Digitized</div>
+        <div style="margin-top:12px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);opacity:0.9;text-align:center">The Uncomfortable Cultural Shift</div>
+      </div>
+    </div>
+
+    <div class="teaser-cta" id="teaserCta" onclick="goTo(5)" style="margin-top:10px">
+      <span style="color:var(--gold);font-size:clamp(13px,1.4vw,18px);letter-spacing:1px;cursor:pointer">
+        →
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: The Community Graph ===== -->
+<div class="slide" id="slide5">
+  <div class="back-btn" onclick="goTo(4)">← Invitation-Based Matchmaking</div>
+
+  <div class="graph-slide">
+    <div class="graph-top-text">
+      Scheduling <em style="font-style:normal;color:var(--green-glow)">is</em> measuring.<br>
+      <span style="color:rgba(232,224,208,0.3);font-size:clamp(11px,1.2vw,15px);font-family:'DM Sans',sans-serif;font-weight:500">Who chooses to spend time with who, in what groups, and why — captured through Give 'n Take's invitation-based matchmaking system.</span>
+    </div>
+
+    <div class="graph-container" id="graphContainer">
+      <!-- SVG network drawn by JS -->
+      <svg class="graph-svg" id="graphSvg" viewBox="0 0 500 500"></svg>
+
+      <!-- Center node -->
+      <div class="graph-center-node">
+        <svg width="44" height="36" viewBox="0 0 44 36" fill="none" style="margin-bottom:4px">
+          <!-- Envelope body -->
+          <rect x="2" y="10" width="40" height="24" rx="3" fill="rgba(45,90,61,0.6)" stroke="var(--green-glow)" stroke-width="1.2"/>
+          <!-- Flap -->
+          <path d="M2 10 L22 24 L42 10" fill="none" stroke="var(--green-glow)" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Small heart/connection icon peeking out -->
+          <circle cx="22" cy="6" r="5" fill="rgba(212,168,83,0.8)" stroke="var(--gold)" stroke-width="0.8"/>
+          <text x="22" y="9" text-anchor="middle" font-size="7" fill="#0a0f0d" font-weight="700">G·T</text>
+        </svg>
+        <div class="graph-center-label">Give 'n Take<br>Graph</div>
+      </div>
+
+      <!-- Orbit concept nodes — clickable -->
+      <div class="graph-node first-node" data-angle="0" data-color="#f0c040" data-panel="connection" onclick="openPanel('connection',event)">
+        <div class="node-pulse-ring"></div>
+        <div class="node-dot" style="background:#f0c040"></div>
+        <div class="node-label">Human<br>Connection</div>
+        <div class="node-tap-hint">tap ↑</div>
+      </div>
+      <div class="graph-node" data-angle="51" data-color="#e88a4a" data-panel="uniqueness" onclick="openPanel('uniqueness',event)">
+        <div class="node-dot" style="background:#e88a4a"></div>
+        <div class="node-label">Uniqueness<br>& Giving</div>
+      </div>
+      <div class="graph-node" data-angle="103" data-color="#4a9de8" data-panel="matchmaking" onclick="openPanel('matchmaking',event)">
+        <div class="node-dot" style="background:#4a9de8"></div>
+        <div class="node-label">True Social<br>Matchmaking</div>
+      </div>
+      <div class="graph-node" data-angle="154" data-color="#4ae8c1" data-panel="peakvalue" onclick="openPanel('peakvalue',event)">
+        <div class="node-dot" style="background:#4ae8c1"></div>
+        <div class="node-label">Peak Human<br>Value</div>
+      </div>
+      <div class="graph-node" data-angle="206" data-color="#5ae87a" data-panel="compounding" onclick="openPanel('compounding',event)">
+        <div class="node-dot" style="background:#5ae87a"></div>
+        <div class="node-label">Peak Community<br>Value</div>
+      </div>
+      <div class="graph-node" data-angle="257" data-color="#e85a7a" data-panel="groupformation" onclick="openPanel('groupformation',event)">
+        <div class="node-dot" style="background:#e85a7a"></div>
+        <div class="node-label">Group<br>Formation</div>
+      </div>
+      <div class="graph-node" data-angle="309" data-color="#f0e060" data-panel="belonging" onclick="openPanel('belonging',event)">
+        <div class="node-dot" style="background:#f0e060"></div>
+        <div class="node-label">Belonging</div>
+      </div>
+    </div>
+    <div class="graph-explore-hint" id="graphExploreHint">Tap each node to explore →</div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: The Expansion — From NEPC to Everywhere ===== -->
+<div class="slide" id="slide6">
+  <div class="back-btn" onclick="goTo(5)">← Autonomous Social Coordination</div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;box-sizing:border-box">
+
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(22px,2.8vw,38px);font-weight:900;color:var(--cream);text-align:center;margin-bottom:32px">
+      The epicenter for solving<br>autonomous social coordination.
+    </div>
+
+    <!-- Concentric rings visualization -->
+    <div style="position:relative;width:min(520px,85vw);height:min(520px,85vw);margin:0 auto" id="expansionContainer">
+      <svg id="expansionSvg" viewBox="0 0 520 520" style="width:100%;height:100%"></svg>
+    </div>
+
+    <!-- Bottom vision text removed -->
+  </div>
+</div>
+
+<!-- ===== NODE DETAIL OVERLAY ===== -->
+<div class="node-overlay" id="nodeOverlay" onclick="closePanel(event)">
+  <div class="overlay-close" onclick="closePanel(event)">✕</div>
+  <div class="overlay-title" id="overlayTitle"></div>
+  <div class="overlay-subtitle" id="overlaySubtitle"></div>
+  <svg class="overlay-svg" id="overlaySvg" viewBox="0 0 600 400"></svg>
+  <div class="overlay-hint">Click anywhere to return</div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-dots">
+  <div class="nav-dot active" onclick="goTo(1)"></div>
+  <div class="nav-dot" onclick="goTo(2)"></div>
+  <div class="nav-dot" onclick="goTo(3)"></div>
+  <div class="nav-dot" onclick="goTo(4)"></div>
+  <div class="nav-dot" onclick="goTo(5)"></div>
+  <div class="nav-dot" onclick="goTo(6)"></div>
+</div>
+<div class="nav-arrow nav-prev" onclick="prev()">‹</div>
+<div class="nav-arrow nav-next" onclick="next()">›</div>
+
+<script>
+  let current = 1;
+  const total = 6;
+
+  function goTo(n) {
+    if (n < 1 || n > total) return;
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide' + n).classList.add('active');
+    document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === n - 1));
+    current = n;
+
+    // Trigger animations per slide
+    if (n === 2) animateBars();
+    if (n === 3) animateTimeline();
+    if (n === 4) animateTeaser();
+    if (n === 5) animateOrbit();
+    if (n === 6) animateExpansion();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  // Animate pain bars on slide 1
+  function animateBars() {
+    const fills = document.querySelectorAll('.pain-bar-fill');
+    fills.forEach(f => f.style.width = '0');
+    setTimeout(() => {
+      fills.forEach((f, i) => {
+        setTimeout(() => {
+          f.style.width = f.dataset.width + '%';
+        }, 100 + i * 80);
+      });
+    }, 300);
+  }
+  // Run on initial load
+  setTimeout(animateBars, 400);
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'd' || e.key === 'D') next();
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') prev();
+  });
+
+  // Pain list stagger animation
+  function animatePainList() {
+    const items = document.querySelectorAll('#painList .pain-item');
+    items.forEach((item, i) => {
+      item.classList.remove('show');
+      setTimeout(() => item.classList.add('show'), 200 + i * 250);
+    });
+  }
+
+  // Teaser slide animation (slide 3)
+  function animateTeaser() {
+    const cta = document.getElementById('teaserCta');
+    cta.classList.remove('show');
+    setTimeout(() => cta.classList.add('show'), 800);
+  }
+
+  // Timeline animation (slide 4)
+  function animateTimeline() {
+    const eras = document.querySelectorAll('#timelineStrip .timeline-era');
+    eras.forEach(e => e.classList.remove('show'));
+    eras.forEach((era, i) => {
+      setTimeout(() => era.classList.add('show'), 300 + i * 300);
+    });
+    const box = document.getElementById('wrongBox');
+    box.classList.remove('show');
+    setTimeout(() => box.classList.add('show'), 300 + eras.length * 300 + 200);
+  }
+
+  // Cascade list animation (slide 4 variant A)
+  function animateCascade() {
+    const activeVariant = document.querySelector('#slide4 .variant.active');
+    if (activeVariant.id === 'variantA') {
+      const items = document.querySelectorAll('#cascadeListA .cascade-item');
+      const cta = document.getElementById('cascadeCtaA');
+      items.forEach(item => item.classList.remove('show'));
+      cta.classList.remove('show');
+      items.forEach((item, i) => {
+        setTimeout(() => item.classList.add('show'), 200 + i * 180);
+      });
+      setTimeout(() => cta.classList.add('show'), 200 + items.length * 180 + 300);
+    } else {
+      animatePillars();
+    }
+  }
+
+  // Pillar animation (slide 4 variant B)
+  function animatePillars() {
+    const cards = document.querySelectorAll('#pillarGrid .pillar-card');
+    const cta = document.getElementById('cascadeCtaB');
+    cards.forEach(c => c.classList.remove('show'));
+    cta.classList.remove('show');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('show'), 300 + i * 200);
+    });
+    setTimeout(() => cta.classList.add('show'), 300 + cards.length * 200 + 300);
+  }
+
+  // Variant toggle
+  function showVariant(v) {
+    document.querySelectorAll('#slide4 .variant').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('#slide4 .vtab').forEach(el => el.classList.remove('active'));
+    if (v === 'a') {
+      document.getElementById('variantA').classList.add('active');
+      document.querySelectorAll('#slide4 .vtab')[0].classList.add('active');
+      animateCascade();
+    } else {
+      document.getElementById('variantB').classList.add('active');
+      document.querySelectorAll('#slide4 .vtab')[1].classList.add('active');
+      animatePillars();
+    }
+  }
+
+  // Network graph animation (slide 5)
+  function animateOrbit() {
+    const container = document.getElementById('graphContainer');
+    const nodes = container.querySelectorAll('.graph-node');
+    const svg = document.getElementById('graphSvg');
+    const w = container.offsetWidth;
+    const h = container.offsetHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    const radius = w * 0.38;
+
+    // Position nodes
+    const positions = [];
+    nodes.forEach((node, i) => {
+      const angle = parseFloat(node.dataset.angle) * (Math.PI / 180) - Math.PI / 2;
+      const x = cx + radius * Math.cos(angle);
+      const y = cy + radius * Math.sin(angle);
+      node.style.left = (x - 18) + 'px';
+      node.style.top = (y - 18) + 'px';
+      positions.push({ x, y, color: node.dataset.color });
+      node.classList.remove('show');
+      setTimeout(() => node.classList.add('show'), 300 + i * 120);
+    });
+
+    // Draw SVG lines (node-to-center + some cross-connections)
+    svg.innerHTML = '';
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    // Lines to center
+    positions.forEach((p, i) => {
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx);
+      line.setAttribute('y1', cy);
+      line.setAttribute('x2', p.x);
+      line.setAttribute('y2', p.y);
+      line.setAttribute('stroke', p.color);
+      svg.appendChild(line);
+      setTimeout(() => line.classList.add('show'), 600 + i * 100);
+    });
+
+    // Cross-connections (every other pair for visual density)
+    const pairs = [[0,2],[1,4],[2,5],[3,6],[4,7],[5,1],[6,3],[0,5]];
+    pairs.forEach((pair, i) => {
+      if (positions[pair[0]] && positions[pair[1]]) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', positions[pair[0]].x);
+        line.setAttribute('y1', positions[pair[0]].y);
+        line.setAttribute('x2', positions[pair[1]].x);
+        line.setAttribute('y2', positions[pair[1]].y);
+        line.setAttribute('stroke', positions[pair[0]].color);
+        line.style.opacity = '0';
+        line.style.strokeDasharray = '3 5';
+        svg.appendChild(line);
+        setTimeout(() => { line.style.opacity = '0.15'; line.style.transition = 'opacity 1s ease'; }, 1200 + i * 150);
+      }
+    });
+  }
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    if (current === 5) animateOrbit();
+  });
+
+  // Archive toggle
+  function toggleArchive() {
+    const panel = document.getElementById('archivePanel');
+    panel.classList.toggle('open');
+  }
+
+  // ===== NODE DETAIL PANEL SYSTEM =====
+  const panelData = {
+    connection: {
+      title: 'Human Connection',
+      subtitle: 'Real bonds between real people — not followers, not likes. Who actually chooses to spend time with who.',
+      color: '#f0c040'
+    },
+    uniqueness: {
+      title: 'Our Uniqueness &\nWhat We Give',
+      subtitle: 'Who you are, digitized by the people who experience you.',
+      color: '#e88a4a'
+    },
+    peakvalue: {
+      title: 'Peak Human Value',
+      subtitle: 'When everything you give is measured and reciprocated, everyone is incentivized to bring their best. The system rewards generosity, reliability, and connection — causing all of us to bring our best selves to each other.',
+      color: '#4ae8c1'
+    },
+    matchmaking: {
+      title: 'True Social Matchmaking',
+      subtitle: 'Not who\'s the same skill level. Who will have the best experience together.',
+      color: '#4a9de8'
+    },
+    groupformation: {
+      title: 'Group Formation',
+      subtitle: 'The right four people on the right court at the right time. Every time.',
+      color: '#e85a7a'
+    },
+    compounding: {
+      title: 'Peak Community Value',
+      subtitle: 'Every session makes the next one better. The graph learns. The community deepens.',
+      color: '#5ae87a'
+    },
+    belonging: {
+      title: 'Belonging',
+      subtitle: 'The feeling that this is your place. These are your people. You matter here. The invite proves it.',
+      color: '#f0e060'
+    }
+  };
+
+  function openPanel(key, e) {
+    e.stopPropagation();
+    // Hide hints after first click
+    document.getElementById('slide5').classList.add('hints-hidden');
+    const overlay = document.getElementById('nodeOverlay');
+    const svg = document.getElementById('overlaySvg');
+    const d = panelData[key];
+    document.getElementById('overlayTitle').textContent = d.title;
+    document.getElementById('overlaySubtitle').textContent = d.subtitle;
+    svg.innerHTML = '';
+    overlay.classList.add('open');
+    // Dispatch to the right animation
+    setTimeout(() => {
+      const animFn = panelAnimations[key];
+      if (animFn) animFn(svg, d.color);
+    }, 200);
+  }
+
+  function closePanel(e) {
+    document.getElementById('nodeOverlay').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePanel(e);
+  });
+
+  // Expansion animation (slide 6)
+  function animateExpansion() {
+    const svg = document.getElementById('expansionSvg');
+    svg.innerHTML = '';
+    const cx = 260, cy = 260;
+    const green = '#3dff7a';
+    const gold = '#d4a853';
+    const cream = '#e8e0d0';
+
+    const rings = [
+      { r: 42, label: 'New England\nPickleball Club', color: green, labelColor: green, fontWeight: '700', fontSize: '10' },
+      { r: 105, label: 'Pickleball', color: '#4a8c5e', labelColor: cream, fontWeight: '600', fontSize: '11' },
+      { r: 168, label: 'All Social Sports', color: '#2d5a3d', labelColor: 'rgba(232,224,208,0.7)', fontWeight: '500', fontSize: '11' },
+      { r: 228, label: 'Beyond Social Sports', color: 'rgba(45,90,61,0.5)', labelColor: 'rgba(232,224,208,0.5)', fontWeight: '500', fontSize: '11' },
+      { r: 252, label: '', color: 'transparent', labelColor: 'transparent', fontWeight: '400', fontSize: '10' }
+    ];
+
+    // Draw rings from outside in (so inner rings render on top)
+    for (let i = rings.length - 1; i >= 0; i--) {
+      const ring = rings[i];
+      // Ring circle
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', ring.r);
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', ring.color);
+      circle.setAttribute('stroke-width', i === 0 ? '2.5' : '1.5');
+      circle.setAttribute('opacity', '0');
+      if (i > 0) circle.setAttribute('stroke-dasharray', '4 3');
+      svg.appendChild(circle);
+      setTimeout(() => { circle.style.transition = 'opacity 0.8s ease'; circle.setAttribute('opacity', i === 0 ? '1' : '0.6'); }, 300 + i * 400);
+
+      // Fill glow for inner ring
+      if (i === 0) {
+        const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glow.setAttribute('cx', cx);
+        glow.setAttribute('cy', cy);
+        glow.setAttribute('r', ring.r);
+        glow.setAttribute('fill', green);
+        glow.setAttribute('opacity', '0');
+        svg.appendChild(glow);
+        setTimeout(() => { glow.style.transition = 'opacity 0.8s ease'; glow.setAttribute('opacity', '0.15'); }, 300);
+      }
+
+      // Label
+      if (ring.label) {
+        const lines = ring.label.split('\n');
+        lines.forEach((line, li) => {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', cx);
+          text.setAttribute('y', i === 0 ? (cy - 4 + li * 14) : (cy - ring.r + 18));
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('font-size', ring.fontSize);
+          text.setAttribute('fill', ring.labelColor);
+          text.setAttribute('font-family', 'DM Sans, sans-serif');
+          text.setAttribute('font-weight', ring.fontWeight);
+          text.setAttribute('letter-spacing', '0.5');
+          text.setAttribute('opacity', '0');
+          text.textContent = line;
+          svg.appendChild(text);
+          setTimeout(() => { text.style.transition = 'opacity 0.6s ease'; text.setAttribute('opacity', '1'); }, 500 + i * 400);
+        });
+      }
+    }
+
+    // (outer vision labels removed)
+
+    // Radiating pulse lines from center outward
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const x2 = cx + 248 * Math.cos(angle);
+      const y2 = cy + 248 * Math.sin(angle);
+      const ray = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ray.setAttribute('x1', cx);
+      ray.setAttribute('y1', cy);
+      ray.setAttribute('x2', x2);
+      ray.setAttribute('y2', y2);
+      ray.setAttribute('stroke', green);
+      ray.setAttribute('stroke-width', '0.5');
+      ray.setAttribute('stroke-dasharray', '2 6');
+      ray.setAttribute('opacity', '0');
+      svg.appendChild(ray);
+      setTimeout(() => { ray.style.transition = 'opacity 1s ease'; ray.setAttribute('opacity', '0.12'); }, 1800 + i * 100);
+    }
+
+    // Show vision text at bottom
+    setTimeout(() => {
+      // expansionVision removed
+    }, 3000);
+  }
+
+  // SVG helper
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  }
+
+  // ===== 7 UNIQUE ANIMATIONS =====
+  const panelAnimations = {
+
+    // 1. HUMAN CONNECTION — Two people, bond forming between them
+    connection(svg, color) {
+      const cx = 300, cy = 200;
+      // Left person
+      const lx = 160, rx = 440;
+      [lx, rx].forEach((px, idx) => {
+        const g = svgEl('g', { opacity: '0' });
+        const head = svgEl('circle', { cx: px, cy: 120, r: 22, fill: idx === 0 ? color : '#e8e0d0', opacity: '0.85' });
+        const body = svgEl('path', { d: `M${px} 145 L${px} 210 M${px-20} 175 L${px+20} 175 M${px} 210 L${px-18} 260 M${px} 210 L${px+18} 260`, stroke: idx === 0 ? color : '#e8e0d0', 'stroke-width': '3', fill: 'none', 'stroke-linecap': 'round', opacity: '0.7' });
+        g.appendChild(head); g.appendChild(body); svg.appendChild(g);
+        setTimeout(() => { g.style.transition = 'opacity 0.6s'; g.setAttribute('opacity', '1'); }, 200 + idx * 300);
+      });
+      // Connection line — animated dashes
+      const line = svgEl('line', { x1: lx + 25, y1: 170, x2: rx - 25, y2: 170, stroke: color, 'stroke-width': '2', 'stroke-dasharray': '8 6', opacity: '0' });
+      svg.appendChild(line);
+      setTimeout(() => { line.style.transition = 'opacity 0.8s'; line.setAttribute('opacity', '0.6'); }, 900);
+      // Pulse circles along the line
+      for (let i = 0; i < 5; i++) {
+        const px = lx + 40 + i * 52;
+        const pulse = svgEl('circle', { cx: px, cy: 170, r: 4, fill: color, opacity: '0' });
+        svg.appendChild(pulse);
+        setTimeout(() => {
+          pulse.style.transition = 'opacity 0.4s';
+          pulse.setAttribute('opacity', '0.7');
+          let on = true;
+          setInterval(() => { pulse.setAttribute('opacity', on ? '0.2' : '0.7'); on = !on; }, 600 + i * 100);
+        }, 1200 + i * 150);
+      }
+      // Heart in center
+      const heart = svgEl('text', { x: cx, y: 175, 'text-anchor': 'middle', 'font-size': '28', fill: color, opacity: '0' });
+      heart.textContent = '❤';
+      svg.appendChild(heart);
+      setTimeout(() => { heart.style.transition = 'opacity 0.6s'; heart.setAttribute('opacity', '0.9'); }, 1600);
+      // Label
+      const label = svgEl('text', { x: cx, y: 310, 'text-anchor': 'middle', 'font-size': '14', fill: 'rgba(232,224,208,0.5)', 'font-family': 'DM Sans, sans-serif' });
+      label.textContent = 'Real bonds. Measured by choices, not clicks.';
+      label.setAttribute('opacity', '0');
+      svg.appendChild(label);
+      setTimeout(() => { label.style.transition = 'opacity 0.6s'; label.setAttribute('opacity', '1'); }, 1800);
+    },
+
+    // 2. UNIQUENESS & GIVING — Central YOU with radiating people + colored attribute dots
+    uniqueness(svg, color) {
+      const cx = 300, cy = 190;
+      // Central YOU figure
+      const youG = svgEl('g', { opacity: '0' });
+      youG.appendChild(svgEl('circle', { cx, cy: cy - 30, r: 20, fill: color }));
+      youG.appendChild(svgEl('path', { d: `M${cx} ${cy-8} L${cx} ${cy+35} M${cx-18} ${cy+12} L${cx+18} ${cy+12} M${cx} ${cy+35} L${cx-15} ${cy+65} M${cx} ${cy+35} L${cx+15} ${cy+65}`, stroke: color, 'stroke-width': '3', fill: 'none', 'stroke-linecap': 'round' }));
+      const youLabel = svgEl('text', { x: cx, y: cy + 85, 'text-anchor': 'middle', 'font-size': '13', fill: color, 'font-weight': '700', 'letter-spacing': '3', 'font-family': 'DM Sans, sans-serif' });
+      youLabel.textContent = 'YOU';
+      youG.appendChild(youLabel);
+      svg.appendChild(youG);
+      setTimeout(() => { youG.style.transition = 'opacity 0.5s'; youG.setAttribute('opacity', '1'); }, 200);
+
+      // 7 radiating people — each with a signal label showing HOW they digitize you
+      const people = [
+        { angle: -90, dots: ['#f0c040', '#4ae8c1', '#c76bdb'], signal: 'invites you back' },
+        { angle: -38, dots: ['#e85a7a', '#4a9de8', '#5ae87a', '#f0c040'], signal: 'picks you first' },
+        { angle: 14, dots: ['#4ae8c1', '#e88a4a'], signal: 'rates you ★★★★★' },
+        { angle: 66, dots: ['#c76bdb', '#f0e060', '#e85a7a'], signal: 'says "best group"' },
+        { angle: 118, dots: ['#4a9de8', '#5ae87a', '#f0c040', '#e88a4a'], signal: 'refers a friend to you' },
+        { angle: 170, dots: ['#e85a7a', '#c76bdb', '#4ae8c1'], signal: 'never cancels on you' },
+        { angle: 222, dots: ['#f0e060', '#4a9de8'], signal: 'requests you again' }
+      ];
+      const radius = 155;
+      people.forEach((p, i) => {
+        const a = p.angle * Math.PI / 180;
+        const px = cx + radius * Math.cos(a);
+        const py = cy + radius * Math.sin(a);
+        const g = svgEl('g', { opacity: '0' });
+        // Dashed line to center
+        const line = svgEl('line', { x1: cx, y1: cy, x2: px, y2: py, stroke: p.dots[0], 'stroke-width': '1.5', 'stroke-dasharray': '6 4', opacity: '0.35' });
+        g.appendChild(line);
+        // Person silhouette
+        g.appendChild(svgEl('circle', { cx: px, cy: py - 14, r: 10, fill: 'rgba(232,224,208,0.5)' }));
+        g.appendChild(svgEl('path', { d: `M${px} ${py-3} L${px} ${py+16} M${px-9} ${py+5} L${px+9} ${py+5}`, stroke: 'rgba(232,224,208,0.4)', 'stroke-width': '2', fill: 'none', 'stroke-linecap': 'round' }));
+        // Unique colored dots above/beside person
+        p.dots.forEach((dc, di) => {
+          const dx = px - (p.dots.length * 5) + di * 10;
+          const dy = py - 30;
+          g.appendChild(svgEl('circle', { cx: dx, cy: dy, r: 3.5, fill: dc, opacity: '0.85' }));
+        });
+        // Signal label — how this person digitizes YOU
+        const sig = svgEl('text', { x: px, y: py + 32, 'text-anchor': 'middle', 'font-size': '8', fill: p.dots[0], 'font-family': 'DM Sans, sans-serif', 'font-style': 'italic', opacity: '0.7' });
+        sig.textContent = p.signal;
+        g.appendChild(sig);
+        svg.appendChild(g);
+        setTimeout(() => { g.style.transition = 'opacity 0.5s, transform 0.5s'; g.setAttribute('opacity', '1'); }, 500 + i * 150);
+      });
+      // (bottom label removed)
+    },
+
+    // 3. PEAK HUMAN VALUE — Ascending golden steps
+    peakvalue(svg, color) {
+      const stages = ['Schedule', 'Measure', 'Automate', 'Match', 'Connect', 'Compound', 'Peak'];
+      const startX = 80, stepW = 70, baseY = 340;
+      stages.forEach((label, i) => {
+        const x = startX + i * stepW;
+        const h = 30 + i * 38;
+        const y = baseY - h;
+        const g = svgEl('g', { opacity: '0' });
+        // Bar
+        const intensity = 0.3 + (i / stages.length) * 0.7;
+        const barColor = i === stages.length - 1 ? '#d4a853' : color;
+        g.appendChild(svgEl('rect', { x, y, width: stepW - 6, height: h, rx: 6, fill: barColor, opacity: String(intensity) }));
+        // Glow on peak
+        if (i === stages.length - 1) {
+          g.appendChild(svgEl('rect', { x: x - 2, y: y - 2, width: stepW - 2, height: h + 4, rx: 8, fill: 'none', stroke: '#d4a853', 'stroke-width': '2', opacity: '0.6' }));
+        }
+        // Label
+        const t = svgEl('text', { x: x + (stepW - 6) / 2, y: baseY + 18, 'text-anchor': 'middle', 'font-size': '10', fill: 'rgba(232,224,208,0.5)', 'font-family': 'DM Sans, sans-serif', 'font-weight': '600' });
+        t.textContent = label;
+        g.appendChild(t);
+        svg.appendChild(g);
+        setTimeout(() => { g.style.transition = 'opacity 0.5s'; g.setAttribute('opacity', '1'); }, 300 + i * 180);
+      });
+      // Arrow
+      const arrow = svgEl('path', { d: 'M90 80 L520 80', stroke: 'rgba(232,224,208,0.15)', 'stroke-width': '1', 'stroke-dasharray': '4 4', fill: 'none', opacity: '0' });
+      svg.appendChild(arrow);
+      setTimeout(() => { arrow.style.transition = 'opacity 0.6s'; arrow.setAttribute('opacity', '1'); }, 1800);
+      const arrowLabel = svgEl('text', { x: 520, y: 70, 'text-anchor': 'end', 'font-size': '11', fill: '#d4a853', 'font-family': 'DM Sans, sans-serif', 'font-weight': '700' });
+      arrowLabel.textContent = 'Give more, get more. Measured and reciprocated. →';
+      arrowLabel.setAttribute('opacity', '0');
+      svg.appendChild(arrowLabel);
+      setTimeout(() => { arrowLabel.style.transition = 'opacity 0.6s'; arrowLabel.setAttribute('opacity', '0.7'); }, 2000);
+    },
+
+    // 4. SOCIAL MATCHMAKING — Two groups rearranging into optimal pairs
+    matchmaking(svg, color) {
+      const cx = 300, cy = 200;
+      // Old way: random arrangement
+      const oldPositions = [[120,100],[180,140],[140,200],[200,260]];
+      const newPositions = [[420,100],[480,140],[440,200],[500,260]];
+      const colors = ['#f0c040','#e85a7a','#4ae8c1','#c76bdb'];
+      // Left group label
+      const oldLabel = svgEl('text', { x: 160, y: 60, 'text-anchor': 'middle', 'font-size': '12', fill: 'rgba(232,224,208,0.4)', 'font-family': 'DM Sans, sans-serif', 'letter-spacing': '1' });
+      oldLabel.textContent = 'SKILL RATING';
+      svg.appendChild(oldLabel);
+      const newLabel = svgEl('text', { x: 460, y: 60, 'text-anchor': 'middle', 'font-size': '12', fill: color, 'font-family': 'DM Sans, sans-serif', 'font-weight': '700', 'letter-spacing': '1' });
+      newLabel.textContent = 'SOCIAL MATCH';
+      svg.appendChild(newLabel);
+      // Large red X under left label
+      const redX1 = svgEl('line', { x1: 135, y1: 72, x2: 185, y2: 122, stroke: '#e04040', 'stroke-width': '5', 'stroke-linecap': 'round', opacity: '0' });
+      const redX2 = svgEl('line', { x1: 185, y1: 72, x2: 135, y2: 122, stroke: '#e04040', 'stroke-width': '5', 'stroke-linecap': 'round', opacity: '0' });
+      svg.appendChild(redX1); svg.appendChild(redX2);
+      setTimeout(() => { redX1.style.transition = 'opacity 0.5s'; redX1.setAttribute('opacity', '0.8'); redX2.style.transition = 'opacity 0.5s'; redX2.setAttribute('opacity', '0.8'); }, 600);
+      // Crossed-out lines on left (bad matches)
+      const badPairs = [[0,1],[2,3]];
+      badPairs.forEach(([a, b], i) => {
+        const line = svgEl('line', { x1: oldPositions[a][0], y1: oldPositions[a][1], x2: oldPositions[b][0], y2: oldPositions[b][1], stroke: '#e04040', 'stroke-width': '1.5', 'stroke-dasharray': '4 3', opacity: '0' });
+        svg.appendChild(line);
+        setTimeout(() => { line.style.transition = 'opacity 0.5s'; line.setAttribute('opacity', '0.5'); }, 800 + i * 200);
+      });
+      // Left dots
+      oldPositions.forEach(([x, y], i) => {
+        const c = svgEl('circle', { cx: x, cy: y, r: 14, fill: colors[i], opacity: '0' });
+        svg.appendChild(c);
+        setTimeout(() => { c.style.transition = 'opacity 0.4s'; c.setAttribute('opacity', '0.5'); }, 300 + i * 100);
+      });
+      // Arrow
+      const arrow = svgEl('text', { x: cx, y: cy + 5, 'text-anchor': 'middle', 'font-size': '32', fill: 'rgba(232,224,208,0.2)' });
+      arrow.textContent = '→';
+      arrow.setAttribute('opacity', '0');
+      svg.appendChild(arrow);
+      setTimeout(() => { arrow.style.transition = 'opacity 0.5s'; arrow.setAttribute('opacity', '1'); }, 1000);
+      // Large green checkmark under right label
+      const checkD = 'M435 82 L452 102 L485 68';
+      const check = svgEl('path', { d: checkD, fill: 'none', stroke: '#3dff7a', 'stroke-width': '5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: '0' });
+      svg.appendChild(check);
+      setTimeout(() => { check.style.transition = 'opacity 0.5s'; check.setAttribute('opacity', '0.9'); }, 1200);
+      // Right dots — optimal pairs with green lines
+      const goodPairs = [[0,2],[1,3]];
+      goodPairs.forEach(([a, b], i) => {
+        const line = svgEl('line', { x1: newPositions[a][0], y1: newPositions[a][1], x2: newPositions[b][0], y2: newPositions[b][1], stroke: '#3dff7a', 'stroke-width': '2', opacity: '0' });
+        svg.appendChild(line);
+        setTimeout(() => { line.style.transition = 'opacity 0.6s'; line.setAttribute('opacity', '0.5'); }, 1400 + i * 200);
+      });
+      newPositions.forEach(([x, y], i) => {
+        const c = svgEl('circle', { cx: x, cy: y, r: 14, fill: colors[i], opacity: '0' });
+        svg.appendChild(c);
+        setTimeout(() => { c.style.transition = 'opacity 0.4s'; c.setAttribute('opacity', '0.9'); }, 1200 + i * 100);
+      });
+      // Bottom
+      const bl = svgEl('text', { x: cx, y: 340, 'text-anchor': 'middle', 'font-size': '13', fill: 'rgba(232,224,208,0.45)', 'font-family': 'DM Sans, sans-serif' });
+      bl.textContent = 'Same players. Dramatically better experience.';
+      bl.setAttribute('opacity', '0');
+      svg.appendChild(bl);
+      setTimeout(() => { bl.style.transition = 'opacity 0.6s'; bl.setAttribute('opacity', '1'); }, 1800);
+    },
+
+    // 5. GROUP FORMATION — 4 scattered dots snap into a court diamond
+    groupformation(svg, color) {
+      const cx = 300, cy = 190;
+      // Court outline
+      const court = svgEl('rect', { x: cx - 100, y: cy - 65, width: 200, height: 130, rx: 8, fill: 'none', stroke: 'rgba(232,224,208,0.1)', 'stroke-width': '1.5', opacity: '0' });
+      svg.appendChild(court);
+      const courtLine = svgEl('line', { x1: cx, y1: cy - 65, x2: cx, y2: cy + 65, stroke: 'rgba(232,224,208,0.08)', 'stroke-width': '1', opacity: '0' });
+      svg.appendChild(courtLine);
+      setTimeout(() => { court.style.transition = 'opacity 0.8s'; court.setAttribute('opacity', '1'); courtLine.style.transition = 'opacity 0.8s'; courtLine.setAttribute('opacity', '1'); }, 400);
+
+      // 4 players — start scattered, animate to positions
+      const scattered = [[120, 80], [480, 100], [100, 310], [500, 290]];
+      const final = [[cx - 55, cy - 28], [cx - 55, cy + 28], [cx + 55, cy - 28], [cx + 55, cy + 28]];
+      const pColors = ['#f0c040', '#4a9de8', '#e85a7a', '#5ae87a'];
+      const names = ['Alex', 'Jordan', 'Sam', 'Pat'];
+
+      scattered.forEach(([x, y], i) => {
+        const c = svgEl('circle', { cx: x, cy: y, r: 16, fill: pColors[i], opacity: '0' });
+        c.id = 'gf-dot-' + i;
+        svg.appendChild(c);
+        const t = svgEl('text', { x, y: y + 30, 'text-anchor': 'middle', 'font-size': '10', fill: pColors[i], 'font-family': 'DM Sans, sans-serif', 'font-weight': '600', opacity: '0' });
+        t.textContent = names[i];
+        t.id = 'gf-name-' + i;
+        svg.appendChild(t);
+        setTimeout(() => { c.style.transition = 'opacity 0.4s'; c.setAttribute('opacity', '0.9'); t.style.transition = 'opacity 0.4s'; t.setAttribute('opacity', '0.8'); }, 300 + i * 120);
+      });
+
+      // Snap to court
+      setTimeout(() => {
+        scattered.forEach((_, i) => {
+          const c = document.getElementById('gf-dot-' + i);
+          const t = document.getElementById('gf-name-' + i);
+          if (c && t) {
+            c.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            c.setAttribute('cx', final[i][0]);
+            c.setAttribute('cy', final[i][1]);
+            t.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            t.setAttribute('x', final[i][0]);
+            t.setAttribute('y', final[i][1] + 30);
+          }
+        });
+      }, 1200);
+
+      // Compatibility score
+      const score = svgEl('text', { x: cx, y: cy + 110, 'text-anchor': 'middle', 'font-size': '16', fill: '#3dff7a', 'font-family': 'DM Sans, sans-serif', 'font-weight': '700', opacity: '0' });
+      score.textContent = '94% compatibility';
+      svg.appendChild(score);
+      setTimeout(() => { score.style.transition = 'opacity 0.6s'; score.setAttribute('opacity', '1'); }, 2200);
+
+      const bl = svgEl('text', { x: cx, y: cy + 135, 'text-anchor': 'middle', 'font-size': '12', fill: 'rgba(232,224,208,0.4)', 'font-family': 'DM Sans, sans-serif' });
+      bl.textContent = 'AI forms the group. Krista confirms. Players show up happy.';
+      bl.setAttribute('opacity', '0');
+      svg.appendChild(bl);
+      setTimeout(() => { bl.style.transition = 'opacity 0.6s'; bl.setAttribute('opacity', '1'); }, 2500);
+    },
+
+    // 6. PEAK COMMUNITY VALUE — Network grows denser in waves
+    compounding(svg, color) {
+      // Layout: rising curve on left, mini network snapshots on right
+      const chartL = 60, chartR = 380, chartT = 60, chartB = 330;
+      const snapX = 440, snapW = 120;
+
+      // Axes
+      const xAxis = svgEl('line', { x1: chartL, y1: chartB, x2: chartR, y2: chartB, stroke: 'rgba(232,224,208,0.15)', 'stroke-width': '1' });
+      const yAxis = svgEl('line', { x1: chartL, y1: chartT, x2: chartL, y2: chartB, stroke: 'rgba(232,224,208,0.15)', 'stroke-width': '1' });
+      svg.appendChild(xAxis); svg.appendChild(yAxis);
+
+      // Y-axis label
+      const yLabel = svgEl('text', { x: 22, y: 195, 'text-anchor': 'middle', 'font-size': '9', fill: 'rgba(232,224,208,0.3)', 'font-family': 'DM Sans, sans-serif', 'letter-spacing': '1', transform: 'rotate(-90 22 195)' });
+      yLabel.textContent = 'COMMUNITY VALUE';
+      svg.appendChild(yLabel);
+
+      // Exponential curve points
+      const pts = [];
+      const steps = 40;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const x = chartL + t * (chartR - chartL);
+        const y = chartB - t * (chartB - chartT - 20);
+        pts.push([x, y]);
+      }
+      const pathD = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+
+      // Glow area under curve
+      const areaD = pathD + ` L${chartR} ${chartB} L${chartL} ${chartB} Z`;
+      const area = svgEl('path', { d: areaD, fill: 'url(#compGrad)', opacity: '0' });
+      // Gradient def
+      const defs = svgEl('defs', {});
+      const grad = svgEl('linearGradient', { id: 'compGrad', x1: '0', y1: '0', x2: '0', y2: '1' });
+      const s1 = svgEl('stop', { offset: '0%', 'stop-color': color, 'stop-opacity': '0.25' });
+      const s2 = svgEl('stop', { offset: '100%', 'stop-color': color, 'stop-opacity': '0.02' });
+      grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
+      svg.appendChild(area);
+
+      // The curve line — animated via stroke-dashoffset
+      const curveLine = svgEl('path', { d: pathD, fill: 'none', stroke: color, 'stroke-width': '2.5', 'stroke-linecap': 'round', opacity: '0' });
+      const curveLen = 800;
+      curveLine.setAttribute('stroke-dasharray', curveLen);
+      curveLine.setAttribute('stroke-dashoffset', curveLen);
+      svg.appendChild(curveLine);
+
+      // Animate curve drawing
+      setTimeout(() => {
+        curveLine.setAttribute('opacity', '1');
+        curveLine.style.transition = 'stroke-dashoffset 2.5s cubic-bezier(0.22, 1, 0.36, 1)';
+        curveLine.setAttribute('stroke-dashoffset', '0');
+        area.style.transition = 'opacity 2s ease 0.5s';
+        area.setAttribute('opacity', '1');
+      }, 400);
+
+      // Time labels along x-axis
+      const times = [
+        { t: 0, label: 'Day 1' },
+        { t: 0.25, label: 'Month 1' },
+        { t: 0.5, label: 'Month 3' },
+        { t: 0.75, label: 'Month 6' },
+        { t: 1, label: 'Year 1' }
+      ];
+      times.forEach((tm, i) => {
+        const x = chartL + tm.t * (chartR - chartL);
+        const tick = svgEl('line', { x1: x, y1: chartB, x2: x, y2: chartB + 6, stroke: 'rgba(232,224,208,0.2)', 'stroke-width': '1' });
+        svg.appendChild(tick);
+        const tl = svgEl('text', { x, y: chartB + 20, 'text-anchor': 'middle', 'font-size': '9', fill: i === times.length - 1 ? color : 'rgba(232,224,208,0.35)', 'font-family': 'DM Sans, sans-serif', 'font-weight': i === times.length - 1 ? '700' : '500', opacity: '0' });
+        tl.textContent = tm.label;
+        svg.appendChild(tl);
+        setTimeout(() => { tl.style.transition = 'opacity 0.4s'; tl.setAttribute('opacity', '1'); }, 600 + i * 400);
+      });
+
+      // Milestone dots on the curve with quality-signal labels
+      const milestones = [
+        { t: 0.15, label: 'First corrections captured' },
+        { t: 0.4, label: 'Matches improve automatically' },
+        { t: 0.7, label: 'Groups feel hand-picked' },
+        { t: 0.95, label: 'Community runs itself' }
+      ];
+      milestones.forEach((ms, mi) => {
+        const idx = Math.round(ms.t * steps);
+        const [mx, my] = pts[idx];
+        // Dot on curve
+        const dot = svgEl('circle', { cx: mx, cy: my, r: 5, fill: color, opacity: '0', stroke: '#0a0f0d', 'stroke-width': '2' });
+        svg.appendChild(dot);
+        setTimeout(() => { dot.style.transition = 'opacity 0.4s'; dot.setAttribute('opacity', '1'); }, 800 + mi * 600);
+
+        // Label to the right of the dot
+        const ml = svgEl('text', { x: mx + 14, y: my + 4, 'text-anchor': 'start', 'font-size': '10', fill: mi === 3 ? color : 'rgba(232,224,208,0.5)', 'font-family': 'DM Sans, sans-serif', 'font-weight': mi === 3 ? '700' : '500', opacity: '0' });
+        ml.textContent = ms.label;
+        svg.appendChild(ml);
+        setTimeout(() => { ml.style.transition = 'opacity 0.4s'; ml.setAttribute('opacity', '1'); }, 1000 + mi * 600);
+      });
+
+      // "Every session compounds" label
+      const compLabel = svgEl('text', { x: 220, y: 385, 'text-anchor': 'middle', 'font-size': '12', fill: color, 'font-family': 'DM Sans, sans-serif', 'font-weight': '700', 'font-style': 'italic', opacity: '0' });
+      compLabel.textContent = 'Every session makes the next one better.';
+      svg.appendChild(compLabel);
+      setTimeout(() => { compLabel.style.transition = 'opacity 0.6s'; compLabel.setAttribute('opacity', '0.8'); }, 3500);
+    },
+
+    // 7. BELONGING — Invitation envelope at center, warm rings of people
+    belonging(svg, color) {
+      const cx = 300, cy = 180;
+      // Concentric warm rings
+      for (let i = 0; i < 4; i++) {
+        const r = 55 + i * 42;
+        const ring = svgEl('circle', { cx, cy, r, fill: 'none', stroke: color, 'stroke-width': '1.2', opacity: '0' });
+        svg.appendChild(ring);
+        setTimeout(() => {
+          ring.style.transition = 'opacity 1s ease';
+          ring.setAttribute('opacity', String(0.3 - i * 0.05));
+        }, 500 + i * 350);
+      }
+      // Center glow behind envelope
+      const glow = svgEl('circle', { cx, cy, r: 40, fill: color, opacity: '0' });
+      svg.appendChild(glow);
+      setTimeout(() => { glow.style.transition = 'opacity 0.8s'; glow.setAttribute('opacity', '0.15'); }, 200);
+      // Envelope body
+      const envW = 52, envH = 36;
+      const envX = cx - envW/2, envY = cy - envH/2 + 2;
+      const envBody = svgEl('rect', { x: envX, y: envY, width: envW, height: envH, rx: 4, fill: 'none', stroke: color, 'stroke-width': '2', opacity: '0' });
+      svg.appendChild(envBody);
+      setTimeout(() => { envBody.style.transition = 'opacity 0.6s'; envBody.setAttribute('opacity', '0.9'); }, 300);
+      // Envelope flap (V shape)
+      const flapD = `M${envX} ${envY} L${cx} ${cy + 4} L${envX + envW} ${envY}`;
+      const flap = svgEl('path', { d: flapD, fill: 'none', stroke: color, 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: '0' });
+      svg.appendChild(flap);
+      setTimeout(() => { flap.style.transition = 'opacity 0.6s'; flap.setAttribute('opacity', '0.9'); }, 300);
+      // Small heart or star rising from envelope
+      const heart = svgEl('text', { x: cx, y: cy - 28, 'text-anchor': 'middle', 'font-size': '18', opacity: '0' });
+      heart.textContent = '✉️';
+      svg.appendChild(heart);
+      // "You're invited" text above envelope
+      const invText = svgEl('text', { x: cx, y: cy - 38, 'text-anchor': 'middle', 'font-size': '11', fill: color, 'font-family': 'DM Sans, sans-serif', 'font-weight': '700', 'letter-spacing': '2', opacity: '0' });
+      invText.textContent = "YOU'RE INVITED";
+      svg.appendChild(invText);
+      setTimeout(() => { invText.style.transition = 'opacity 0.8s'; invText.setAttribute('opacity', '0.7'); }, 800);
+      // People dots in rings — drawn toward the envelope
+      const ringPeople = [
+        { r: 55, count: 5, delay: 900, size: 6 },
+        { r: 97, count: 7, delay: 1300, size: 5 },
+        { r: 139, count: 9, delay: 1700, size: 4 },
+        { r: 181, count: 11, delay: 2100, size: 3.5 }
+      ];
+      ringPeople.forEach(ring => {
+        for (let j = 0; j < ring.count; j++) {
+          const angle = (j / ring.count) * Math.PI * 2 - Math.PI / 2;
+          const px = cx + ring.r * Math.cos(angle);
+          const py = cy + ring.r * Math.sin(angle);
+          const dot = svgEl('circle', { cx: px, cy: py, r: ring.size, fill: color, opacity: '0' });
+          svg.appendChild(dot);
+          setTimeout(() => { dot.style.transition = 'opacity 0.5s'; dot.setAttribute('opacity', String(0.65 - (ring.r - 55) * 0.002)); }, ring.delay + j * 50);
+          // Dashed line from person to center (invitation connection)
+          if (ring.r <= 97) {
+            const line = svgEl('line', { x1: px, y1: py, x2: cx, y2: cy, stroke: color, 'stroke-width': '0.5', 'stroke-dasharray': '3 4', opacity: '0' });
+            svg.appendChild(line);
+            setTimeout(() => { line.style.transition = 'opacity 0.8s'; line.setAttribute('opacity', '0.15'); }, ring.delay + j * 50 + 300);
+          }
+        }
+      });
+      // Bottom label
+      const label = svgEl('text', { x: cx, y: 390, 'text-anchor': 'middle', 'font-size': '14', fill: color, 'font-family': 'Playfair Display, serif', 'font-weight': '700', 'font-style': 'italic', opacity: '0' });
+      label.textContent = 'The invite proves it.';
+      svg.appendChild(label);
+      setTimeout(() => { label.style.transition = 'opacity 0.8s'; label.setAttribute('opacity', '0.8'); }, 2600);
+    }
+  };
+</script>
+
+<!-- Archive toggle button -->
+<div class="archive-toggle" onclick="toggleArchive()">📦 Archived Slides</div>
+
+<!-- Archived Slides Panel -->
+<div class="archive-panel" id="archivePanel">
+  <div class="archive-header">
+    <span>Archived Slides</span>
+    <span class="archive-close" onclick="toggleArchive()">✕</span>
+  </div>
+
+  <div class="archive-slide-card">
+    <div class="archive-label">Social Sports — Pain List</div>
+    <div class="archive-preview">
+      <div style="font-size:14px;font-weight:700;color:var(--cream);margin-bottom:4px">Social Sports</div>
+      <div style="font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Where the pain is highest</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:16px;text-align:center">🎾<br><span style="font-size:8px;color:var(--cream)">Tennis</span></div>
+        <div style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:16px;text-align:center">🏸<br><span style="font-size:8px;color:var(--cream)">Padel</span></div>
+        <div style="padding:6px 10px;border-radius:8px;background:rgba(45,90,61,0.2);border:1px solid var(--green-light);font-size:16px;text-align:center"><svg width="20" height="20" viewBox="0 0 42 42" fill="none"><rect x="14" y="2" width="16" height="22" rx="8" fill="#4a8c5e" stroke="#3dff7a" stroke-width="1.5"/><rect x="18" y="24" width="8" height="10" rx="2" fill="#6b4c2a"/><circle cx="35" cy="8" r="4" fill="#c8d84a" stroke="#a0b030" stroke-width="1"/></svg><br><span style="font-size:8px;color:var(--green-glow)">Pickleball</span></div>
+        <div style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:16px;text-align:center">⛳<br><span style="font-size:8px;color:var(--cream)">Golf</span></div>
+      </div>
+      <div style="font-size:9px;color:rgba(232,224,208,0.4);line-height:1.5">
+        ✕ Matchmaking based on skill ratings alone<br>
+        ✕ Coordinators manually schedule everything<br>
+        ✕ No technology captures who belongs together<br>
+        ✕ Communities forming faster than coordination
+      </div>
+    </div>
+    <div class="archive-reason">Removed: content absorbed into slide 1 cards + slide 2 combined view</div>
+  </div>
+
+  <div class="archive-slide-card">
+    <div class="archive-label">Cascade List / Pillar Variants</div>
+    <div class="archive-preview">
+      <div style="font-size:14px;font-weight:700;color:var(--cream);margin-bottom:8px">A new paradigm is about to digitize all of this.</div>
+      <div style="font-size:9px;color:rgba(232,224,208,0.5);line-height:1.8">
+        💛 Real human connection<br>
+        🤲 What we give to each other<br>
+        ✨ Peak human value<br>
+        🔗 True social matchmaking<br>
+        👥 Group formation<br>
+        📈 Peak community value<br>
+        🤝 Belonging
+      </div>
+    </div>
+    <div class="archive-reason">Removed: redundant with orbit slide — same content, orbit visual is stronger</div>
+  </div>
+</div>
+
+</body>
+</html>
